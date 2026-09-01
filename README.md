@@ -17,6 +17,23 @@
 
 ## 사용 방법
 
+### 방법 1. 단일 파일 (서버 없이 사용) — `markdown-viewer.html`
+
+`markdown-viewer.html` 하나만 내려받아 휴대폰에 저장한 뒤 브라우저로 열면 바로 동작합니다.
+CSS·JS·라이브러리가 모두 이 파일 안에 들어 있어서 **인터넷도, 서버도 필요 없습니다.**
+
+- ✅ 편집/미리보기, 표·체크리스트·코드블록, 목차, 다크모드, 글자 크기, 자동 저장, 파일 열기·저장
+- ❌ 홈 화면 설치(PWA), 오프라인 캐시, 다른 앱에서 "공유"로 받기
+  → 이 세 가지는 브라우저가 서비스 워커를 HTTPS에서만 허용하기 때문에 `file://`에서는 쓸 수 없습니다. 방법 2를 쓰세요.
+
+이 파일은 `index.html` 과 그 자산들로부터 생성됩니다. 원본을 수정한 뒤에는 다시 만들어 주세요.
+
+```bash
+node build-standalone.js   # → markdown-viewer.html
+```
+
+### 방법 2. 정적 호스팅 (전체 기능)
+
 정적 파일이므로 별도 빌드 없이 아무 정적 웹 서버로 제공하면 됩니다.
 
 ```bash
@@ -34,13 +51,16 @@ GitHub Pages, Netlify, Vercel, S3 등 정적 호스팅 어디에 올려도 그�
 ## 폴더 구조
 
 ```
-index.html            앱 진입점
-css/style.css         반응형(모바일 퍼스트) 스타일, 라이트/다크 테마
-js/app.js             렌더링, 파일 열기/저장, TOC, 테마, 공유 수신 등 앱 로직
-sw.js                 서비스 워커 (오프라인 캐시 + Web Share Target 처리)
-manifest.webmanifest  PWA 매니페스트 (설치, 아이콘, share_target)
-icons/                앱 아이콘 (SVG)
-vendor/               외부 라이브러리 (marked, DOMPurify) — 오프라인 동작을 위해 로컬에 포함
+index.html             앱 진입점
+css/style.css          반응형(모바일 퍼스트) 스타일, 라이트/다크 테마
+js/app.js              렌더링, 파일 열기/저장, TOC, 테마, 공유 수신 등 앱 로직
+sw.js                  서비스 워커 (오프라인 캐시 + Web Share Target 처리)
+manifest.webmanifest   PWA 매니페스트 (설치, 아이콘, share_target)
+icons/                 앱 아이콘 (SVG)
+vendor/                외부 라이브러리 (marked, DOMPurify) — 오프라인 동작을 위해 로컬에 포함
+
+build-standalone.js    위 파일들을 하나로 합치는 빌드 스크립트
+markdown-viewer.html   ↑ 로 생성된 단일 파일 배포본 (직접 수정하지 마세요)
 ```
 
 ## 사용한 오픈소스

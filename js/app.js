@@ -369,7 +369,10 @@
 
     checkSharedContent();
 
-    if ('serviceWorker' in navigator) {
+    // 서비스 워커는 http(s)에서만 동작한다.
+    // 단일 HTML 파일을 file://로 직접 열었을 때는 등록을 시도하지 않는다.
+    const isHttp = /^https?:$/.test(window.location.protocol);
+    if (isHttp && 'serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch((err) => {
           console.warn('서비스 워커 등록 실패:', err);
