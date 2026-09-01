@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>마크다운 뷰어</title>
+  <meta name="description" content="모바일에서 바로 쓰는 마크다운 뷰어 · 편집기 · 오프라인 PWA" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MD 뷰어" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>📄 마크다운 뷰어</h1>
+    <div class="toolbar">
+      <button id="btn-open" type="button">📂 열기</button>
+      <input type="file" id="file-input" accept=".md,.markdown,.mdown,.mkd,.txt,text/markdown,text/plain" hidden />
+      <button id="btn-save" type="button">💾 저장</button>
+      <button id="btn-toc" type="button">📑 목차</button>
+      <button id="btn-font-minus" type="button" aria-label="글자 작게">A-</button>
+      <button id="btn-font-plus" type="button" aria-label="글자 크게">A+</button>
+      <button id="btn-theme" type="button" aria-label="테마 전환">🌓</button>
+      <button id="btn-clear" type="button">🗑️ 지우기</button>
+      <span id="filename-badge" class="filename-badge"></span>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-view="edit" role="tab" aria-selected="true">편집</button>
+      <button class="tab" data-view="preview" role="tab" aria-selected="false">미리보기</button>
+    </div>
+  </header>
+
+  <main class="workspace view-edit" id="workspace">
+    <section class="pane edit-pane" id="edit-pane">
+      <label for="editor" class="sr-only">마크다운 편집기</label>
+      <textarea
+        id="editor"
+        placeholder="여기에 마크다운을 입력하거나 붙여넣으세요...&#10;&#10;파일 열기 버튼을 누르거나, 파일을 화면에 끌어다 놓거나,&#10;다른 앱에서 '공유'로 이 뷰어를 선택할 수도 있습니다."
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="off"
+        autocorrect="off"
+      ></textarea>
+    </section>
+    <section class="pane preview-pane" id="preview-pane">
+      <article id="preview" class="markdown-body empty"></article>
+    </section>
+  </main>
+
+  <div class="scrim" id="scrim"></div>
+  <aside class="toc-drawer" id="toc-drawer" aria-hidden="true">
+    <div class="toc-header">
+      <h2>목차</h2>
+      <button id="btn-toc-close" type="button" aria-label="목차 닫기">✕</button>
+    </div>
+    <nav id="toc-list"></nav>
+  </aside>
+
+  <div class="dropzone-overlay" id="dropzone-overlay">
+    <p>여기에 마크다운 파일을 놓으세요</p>
+  </div>
+
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/purify.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
