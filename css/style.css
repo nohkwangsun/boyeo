@@ -796,6 +796,12 @@ body {
   color: var(--text);
 }
 
+/* 반복 토글이 켜져 있을 때 강조 표시 */
+.tts-bar .icon-btn.active {
+  color: var(--link);
+  background: color-mix(in srgb, var(--link) 14%, transparent);
+}
+
 /* ---------------- 스크림 / 드롭존 ---------------- */
 .scrim {
   position: fixed;

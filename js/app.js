@@ -22,6 +22,7 @@
   const ttsBar = $('tts-bar');
   const ttsLabel = $('tts-label');
   const btnTtsToggle = $('btn-tts-toggle');
+  const btnTtsRepeat = $('btn-tts-repeat');
   const btnReadAll = $('btn-read-all');
   const ttsRateField = $('tts-rate-field');
   const ttsRateSeg = $('tts-rate-seg');
@@ -32,6 +33,7 @@
   const K_THEME = 'md-viewer-theme';
   const K_FONT = 'md-viewer-font-size';
   const K_RATE = 'md-viewer-tts-rate';
+  const K_REPEAT = 'md-viewer-tts-repeat';
 
   const FONT_MIN = 14;
   const FONT_MAX = 26;
@@ -384,6 +386,10 @@
   const synth = ttsSupported ? window.speechSynthesis : null;
 
   let ttsRate = 1;
+  let ttsRepeat = false; // 회화 섀도잉 연습용: 켜두면 재생이 끝날 때마다 같은 내용을 다시 읽는다
+  let repeatTimer = null;
+  let playToken = 0; // 재생을 새로 시작할 때마다 증가시켜, 이전 재생의 지연된 onend/onerror가
+  // 방금 시작한 새 재생에 잘못 간섭(재생바를 끄거나 반복을 거는 등)하지 않도록 막는다
 
   const KOREAN_RE = /[가-힣ᄀ-ᇿ㄰-㆏]/;
   const LATIN_RE = /[A-Za-z]/;
@@ -431,7 +437,8 @@
   function hideBar() {
     ttsBar.classList.remove('visible');
     setTimeout(() => {
-      ttsBar.hidden = true;
+      // 이 사이 새로운 재생이 시작돼 바가 다시 보이는 중이면 건드리지 않는다
+      if (!ttsBar.classList.contains('visible')) ttsBar.hidden = true;
     }, 240);
     if (activeBlockBtn) {
       activeBlockBtn.classList.remove('playing');
@@ -441,7 +448,9 @@
 
   function speakText(text, label) {
     if (!synth || !text || !text.trim()) return;
+    clearTimeout(repeatTimer);
     synth.cancel();
+    const myToken = ++playToken;
 
     const trimmed = text.trim();
     const hasKorean = KOREAN_RE.test(trimmed);
@@ -467,8 +476,19 @@
       // 여러 조각을 이어 speak() 하면 브라우저가 순서대로 재생 큐에 쌓아준다.
       // 마지막 조각이 끝나야 진짜로 다 읽은 것이므로 종료 처리는 거기에만 건다.
       if (i === segments.length - 1) {
-        utter.onend = hideBar;
-        utter.onerror = hideBar;
+        utter.onend = () => {
+          if (myToken !== playToken) return; // 이미 다른 재생으로 대체됨 — 무시
+          if (ttsRepeat) {
+            // 바로 다시 읽기 시작하면 문장 사이 구분이 안 되니 살짝 쉬었다 반복한다
+            repeatTimer = setTimeout(() => speakText(text, label), 550);
+          } else {
+            hideBar();
+          }
+        };
+        utter.onerror = () => {
+          if (myToken !== playToken) return;
+          hideBar();
+        };
       }
       synth.speak(utter);
     });
@@ -477,6 +497,8 @@
   }
 
   function stopSpeaking() {
+    clearTimeout(repeatTimer);
+    playToken++; // 지금 재생 중인 발화의 onend/onerror 를 전부 무효화
     if (synth && (synth.speaking || synth.pending)) synth.cancel();
     if (!ttsBar.hidden) hideBar();
   }
@@ -497,6 +519,15 @@
   });
 
   $('btn-tts-stop').addEventListener('click', stopSpeaking);
+
+  function applyTtsRepeat(on) {
+    ttsRepeat = on;
+    btnTtsRepeat.classList.toggle('active', on);
+    btnTtsRepeat.setAttribute('aria-pressed', String(on));
+    store.set(K_REPEAT, on ? '1' : '0');
+  }
+
+  btnTtsRepeat.addEventListener('click', () => applyTtsRepeat(!ttsRepeat));
 
   btnReadAll.addEventListener('click', () => {
     closeOverlays();
@@ -586,6 +617,15 @@
     content = store.get(K_DOC) || '';
     editor.value = content;
     render();
+
+    if (ttsSupported) {
+      const savedRate = parseFloat(store.get(K_RATE));
+      ttsRate = savedRate > 0 ? savedRate : 1;
+      ttsRateSeg
+        .querySelectorAll('button')
+        .forEach((b) => b.classList.toggle('active', parseFloat(b.dataset.rate) === ttsRate));
+      applyTtsRepeat(store.get(K_REPEAT) === '1');
+    }
 
     pickUpSharedContent();
 

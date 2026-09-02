@@ -61,6 +61,10 @@
     <symbol id="i-stop" viewBox="0 0 24 24">
       <rect x="6" y="6" width="12" height="12" rx="1.5" />
     </symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24">
+      <path d="M17 2l4 4-4 4" /><path d="M3 12V10a4 4 0 0 1 4-4h14" />
+      <path d="M7 22l-4-4 4-4" /><path d="M21 12v2a4 4 0 0 1-4 4H3" />
+    </symbol>
   </svg>
 
   <header class="topbar" id="topbar">
@@ -186,6 +190,9 @@
   <div class="tts-bar" id="tts-bar" hidden>
     <svg class="icon tts-bar-wave"><use href="#i-speaker" /></svg>
     <span class="tts-bar-label" id="tts-label">읽는 중…</span>
+    <button class="icon-btn" id="btn-tts-repeat" type="button" aria-label="반복 재생" aria-pressed="false">
+      <svg class="icon"><use href="#i-repeat" /></svg>
+    </button>
     <button class="icon-btn" id="btn-tts-toggle" type="button" aria-label="일시정지">
       <svg class="icon icon-fill"><use href="#i-pause" /></svg>
     </button>
