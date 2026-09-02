@@ -1,8 +1,13 @@
 // 마크다운 뷰어 서비스 워커
 // - 정적 자산 오프라인 캐싱
 // - Web Share Target 처리 (다른 앱에서 .md 파일/텍스트를 "공유"로 받기)
-
-const CACHE_VERSION = 'md-viewer-v1';
+//
+// 캐시 전략 메모:
+// 앱 자체 코드(HTML/CSS/JS)는 네트워크 우선(network-first)으로 가져온다.
+// 캐시 우선(cache-first)으로 두면 배포를 갱신해도 새로고침이 계속
+// 예전 버전만 보여주는 문제가 생기기 때문이다. 자주 안 바뀌는
+// 외부 라이브러리/아이콘/매니페스트만 캐시 우선으로 둔다.
+const CACHE_VERSION = 'md-viewer-v2';
 const SHARE_CACHE = 'md-viewer-share-v1';
 const SHARE_KEY = 'shared-payload';
 
@@ -17,6 +22,9 @@ const PRECACHE_URLS = [
   './icons/icon.svg',
   './icons/icon-maskable.svg',
 ];
+
+// 배포마다 바뀌는 앱 자체 코드 → network-first
+const NETWORK_FIRST = new Set(['./', './index.html', './css/style.css', './js/app.js']);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -55,30 +63,50 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 그 외에는 동일 출처 GET 요청만 캐시 우선 전략으로 처리
+  // 그 외에는 동일 출처 GET 요청만 처리
   if (request.method !== 'GET' || url.origin !== self.location.origin) {
     return;
   }
 
-  event.respondWith(
-    (async () => {
-      const cached = await caches.match(request);
-      if (cached) return cached;
-      try {
-        const response = await fetch(request);
-        if (response && response.ok) {
-          const cache = await caches.open(CACHE_VERSION);
-          cache.put(request, response.clone());
-        }
-        return response;
-      } catch (err) {
-        const fallback = await caches.match('./index.html');
-        if (fallback) return fallback;
-        throw err;
-      }
-    })()
-  );
+  const path = './' + url.pathname.replace(/^\//, '').replace(/^boyeo\//, '');
+  const isAppShell = request.mode === 'navigate' || NETWORK_FIRST.has(path);
+
+  event.respondWith(isAppShell ? networkFirst(request) : cacheFirst(request));
 });
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_VERSION);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (err) {
+    const fallback = await caches.match('./index.html');
+    if (fallback) return fallback;
+    throw err;
+  }
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_VERSION);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (err) {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    const fallback = await caches.match('./index.html');
+    if (fallback) return fallback;
+    throw err;
+  }
+}
 
 async function handleShareTarget(event) {
   const request = event.request;

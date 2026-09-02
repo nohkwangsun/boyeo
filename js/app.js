@@ -19,12 +19,19 @@
   const dropzone = $('dropzone');
   const fontValue = $('font-value');
   const themeSeg = $('theme-seg');
+  const ttsBar = $('tts-bar');
+  const ttsLabel = $('tts-label');
+  const btnTtsToggle = $('btn-tts-toggle');
+  const btnReadAll = $('btn-read-all');
+  const ttsRateField = $('tts-rate-field');
+  const ttsRateSeg = $('tts-rate-seg');
 
   // ---------------- 저장소 키 ----------------
   const K_DOC = 'md-viewer-draft';
   const K_NAME = 'md-viewer-filename';
   const K_THEME = 'md-viewer-theme';
   const K_FONT = 'md-viewer-font-size';
+  const K_RATE = 'md-viewer-tts-rate';
 
   const FONT_MIN = 14;
   const FONT_MAX = 26;
@@ -86,6 +93,7 @@
     preview.querySelectorAll('img').forEach((img) => img.setAttribute('loading', 'lazy'));
 
     buildToc();
+    addBlockControls();
     updateTitle();
   }
 
@@ -106,6 +114,7 @@
   }
 
   function setContent(text, name) {
+    stopSpeaking(); // 문서가 바뀌면 읽던 내용도 더는 유효하지 않다
     content = text || '';
     if (name !== undefined) {
       filename = name;
@@ -201,6 +210,7 @@
   // ---------------- 편집 모드 ----------------
   function openEditor() {
     closeOverlays();
+    stopSpeaking();
     editor.value = content;
     editMode.hidden = false;
     requestAnimationFrame(() => editor.focus());
@@ -369,6 +379,138 @@
     { passive: true }
   );
 
+  // ---------------- 읽어주기 (TTS) ----------------
+  const ttsSupported = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+  const synth = ttsSupported ? window.speechSynthesis : null;
+
+  let ttsRate = 1;
+
+  // 한국어 문자가 섞여 있으면 한국어 음성/언어를 우선 지정한다.
+  const KOREAN_RE = /[가-힣ᄀ-ᇿ㄰-㆏]/;
+
+  function pickVoice(text) {
+    if (!synth) return null;
+    const voices = synth.getVoices();
+    if (!voices.length) return null;
+    if (KOREAN_RE.test(text)) {
+      return voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('ko')) || null;
+    }
+    return null;
+  }
+
+  function showBar(label) {
+    ttsLabel.textContent = label;
+    ttsBar.hidden = false;
+    requestAnimationFrame(() => ttsBar.classList.add('visible'));
+    ttsBar.classList.remove('paused');
+    btnTtsToggle.setAttribute('aria-label', '일시정지');
+    btnTtsToggle.innerHTML = '<svg class="icon icon-fill"><use href="#i-pause" /></svg>';
+  }
+
+  function hideBar() {
+    ttsBar.classList.remove('visible');
+    setTimeout(() => {
+      ttsBar.hidden = true;
+    }, 240);
+    if (activeBlockBtn) {
+      activeBlockBtn.classList.remove('playing');
+      activeBlockBtn = null;
+    }
+  }
+
+  function speakText(text, label) {
+    if (!synth || !text || !text.trim()) return;
+    synth.cancel();
+
+    const utter = new SpeechSynthesisUtterance(text.trim());
+    utter.rate = ttsRate;
+    if (KOREAN_RE.test(text)) utter.lang = 'ko-KR';
+    const voice = pickVoice(text);
+    if (voice) utter.voice = voice;
+
+    utter.onend = hideBar;
+    utter.onerror = hideBar;
+
+    showBar(label);
+    synth.speak(utter);
+  }
+
+  function stopSpeaking() {
+    if (synth && (synth.speaking || synth.pending)) synth.cancel();
+    if (!ttsBar.hidden) hideBar();
+  }
+
+  btnTtsToggle.addEventListener('click', () => {
+    if (!synth) return;
+    if (synth.paused) {
+      synth.resume();
+      ttsBar.classList.remove('paused');
+      btnTtsToggle.setAttribute('aria-label', '일시정지');
+      btnTtsToggle.innerHTML = '<svg class="icon icon-fill"><use href="#i-pause" /></svg>';
+    } else if (synth.speaking) {
+      synth.pause();
+      ttsBar.classList.add('paused');
+      btnTtsToggle.setAttribute('aria-label', '재생');
+      btnTtsToggle.innerHTML = '<svg class="icon icon-fill"><use href="#i-play" /></svg>';
+    }
+  });
+
+  $('btn-tts-stop').addEventListener('click', stopSpeaking);
+
+  btnReadAll.addEventListener('click', () => {
+    closeOverlays();
+    speakText(preview.innerText, '문서 전체 읽는 중…');
+  });
+
+  ttsRateSeg.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-rate]');
+    if (!btn) return;
+    ttsRate = parseFloat(btn.dataset.rate) || 1;
+    store.set(K_RATE, String(ttsRate));
+    ttsRateSeg.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
+  });
+
+  if (ttsSupported) {
+    btnReadAll.hidden = false;
+    ttsRateField.hidden = false;
+  }
+
+  // ---- 블록별 듣기 버튼 ----
+  // render() 가 preview.innerHTML 을 새로 채울 때마다 다시 호출된다.
+  // 각 최상위 블록(문단/제목/목록/인용/코드블록/표...)을 .block-wrap 으로
+  // 감싸고, 오른쪽 여백에 그 블록만 읽어주는 버튼을 붙인다.
+  // (table/ul/ol 내부엔 button 을 직접 넣을 수 없어 바깥을 감싸는 방식을 쓴다.)
+  let activeBlockBtn = null;
+
+  function addBlockControls() {
+    if (!ttsSupported) return;
+
+    Array.from(preview.children).forEach((el) => {
+      if (el.tagName === 'HR') return;
+      const text = (el.innerText || el.textContent || '').trim();
+      if (!text) return;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'block-wrap';
+      el.replaceWith(wrap);
+      wrap.appendChild(el);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'block-tts';
+      btn.setAttribute('aria-label', '이 부분 듣기');
+      btn.innerHTML = '<svg class="icon"><use href="#i-speaker" /></svg>';
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeBlockBtn && activeBlockBtn !== btn) activeBlockBtn.classList.remove('playing');
+        activeBlockBtn = btn;
+        btn.classList.add('playing');
+        speakText(text, '이 부분 읽는 중…');
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
   // ---------------- 공유로 받기(Web Share Target) ----------------
   async function pickUpSharedContent() {
     const params = new URLSearchParams(window.location.search);
@@ -410,9 +552,22 @@
     // 단일 HTML 파일을 file:// 로 직접 열었을 때는 등록을 시도하지 않는다.
     if (/^https?:$/.test(window.location.protocol) && 'serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch((err) => {
-          console.warn('서비스 워커 등록 실패:', err);
-        });
+        // updateViaCache: 'none' → sw.js 자체를 브라우저 HTTP 캐시에 기대지 않고
+        // 매번 네트워크로 새로 확인한다. (이게 없으면 배포를 갱신해도
+        // 새 서비스 워커를 한동안 못 알아챌 수 있다.)
+        navigator.serviceWorker
+          .register('sw.js', { updateViaCache: 'none' })
+          .then((reg) => reg.update().catch(() => {}))
+          .catch((err) => console.warn('서비스 워커 등록 실패:', err));
+      });
+
+      // 새 서비스 워커가 활성화되면(=새 배포가 반영되면) 화면을 한 번 새로고침해
+      // 사용자가 직접 캐시를 지우지 않아도 최신 버전이 보이게 한다.
+      let refreshedOnce = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshedOnce) return;
+        refreshedOnce = true;
+        window.location.reload();
       });
     }
   }
