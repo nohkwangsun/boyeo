@@ -1,0 +1,12 @@
+{
+  "appId": "com.nohkwangsun.markdownviewer",
+  "appName": "마크다운 뷰어",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#ffffff"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

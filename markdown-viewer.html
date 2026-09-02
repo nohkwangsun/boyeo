@@ -1339,8 +1339,16 @@ body {
   });
 
   // ---------------- 파일 열기 / 저장 ----------------
+  // 데스크탑 앱(Electron)으로 실행 중이면 브라우저 파일 입력 대신
+  // 운영체제 기본 파일 대화상자를 쓴다.
+  const desktop = window.mdViewerDesktop || null;
+
   function pickFile() {
     closeOverlays();
+    if (desktop) {
+      desktop.openFileDialog();
+      return;
+    }
     fileInput.click();
   }
 
@@ -1725,6 +1733,19 @@ body {
         .querySelectorAll('button')
         .forEach((b) => b.classList.toggle('active', parseFloat(b.dataset.rate) === ttsRate));
       applyTtsRepeat(store.get(K_REPEAT) === '1');
+    }
+
+    // 네이티브 앱이 연 파일을 웹앱으로 넘기는 통로.
+    // 데스크탑(Electron preload)과 안드로이드(MainActivity)가 모두 이걸 호출한다.
+    window.__mdViewerOpenFile = (name, text) => {
+      setContent(String(text == null ? '' : text), name || '');
+      viewer.scrollTop = 0;
+      showTopbar();
+      closeOverlays();
+    };
+
+    if (desktop) {
+      desktop.onOpenFile(({ name, content: text }) => window.__mdViewerOpenFile(name, text));
     }
 
     pickUpSharedContent();
