@@ -47,32 +47,28 @@
         "name": "Markdown Document",
         "description": "마크다운 문서",
         "role": "Viewer",
-        "mimeType": "text/markdown",
-        "icon": "icons/icon-512.png"
+        "mimeType": "text/markdown"
       },
       {
         "ext": "markdown",
         "name": "Markdown Document",
         "description": "마크다운 문서",
         "role": "Viewer",
-        "mimeType": "text/markdown",
-        "icon": "icons/icon-512.png"
+        "mimeType": "text/markdown"
       },
       {
         "ext": "mdown",
         "name": "Markdown Document",
         "description": "마크다운 문서",
         "role": "Viewer",
-        "mimeType": "text/markdown",
-        "icon": "icons/icon-512.png"
+        "mimeType": "text/markdown"
       },
       {
         "ext": "mkd",
         "name": "Markdown Document",
         "description": "마크다운 문서",
         "role": "Viewer",
-        "mimeType": "text/markdown",
-        "icon": "icons/icon-512.png"
+        "mimeType": "text/markdown"
       }
     ],
     "linux": {
