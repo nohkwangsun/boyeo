@@ -385,17 +385,38 @@
 
   let ttsRate = 1;
 
-  // 한국어 문자가 섞여 있으면 한국어 음성/언어를 우선 지정한다.
   const KOREAN_RE = /[가-힣ᄀ-ᇿ㄰-㆏]/;
+  const LATIN_RE = /[A-Za-z]/;
 
-  function pickVoice(text) {
+  function pickVoiceByLang(prefix) {
     if (!synth) return null;
     const voices = synth.getVoices();
     if (!voices.length) return null;
-    if (KOREAN_RE.test(text)) {
-      return voices.find((v) => v.lang && v.lang.toLowerCase().startsWith('ko')) || null;
+    return voices.find((v) => v.lang && v.lang.toLowerCase().startsWith(prefix)) || null;
+  }
+
+  // 한/영이 섞인 문장을 한 음성으로 통째로 읽으면 "한국인이 영어 읽는" 어색한
+  // 발음이 난다. 한글 구간과 영문 구간을 나눠 각각 맞는 언어로 읽게 한다.
+  // 공백/숫자/기호 같은 중립 문자는 방금 전 구간에 그대로 붙여서, 스크립트가
+  // 실제로 바뀌는 경계에서만 문장을 쪼갠다.
+  function segmentByScript(text) {
+    const segments = [];
+    let cur = '';
+    let curLang = null; // 'ko' | 'en' | null(아직 정해지지 않음)
+
+    for (const ch of text) {
+      const chLang = KOREAN_RE.test(ch) ? 'ko' : LATIN_RE.test(ch) ? 'en' : null;
+      if (chLang === null || curLang === null || chLang === curLang) {
+        cur += ch;
+        if (chLang !== null) curLang = chLang;
+      } else {
+        segments.push({ text: cur, lang: curLang });
+        cur = ch;
+        curLang = chLang;
+      }
     }
-    return null;
+    if (cur.trim()) segments.push({ text: cur, lang: curLang || 'en' });
+    return segments.filter((s) => s.text.trim());
   }
 
   function showBar(label) {
@@ -422,17 +443,37 @@
     if (!synth || !text || !text.trim()) return;
     synth.cancel();
 
-    const utter = new SpeechSynthesisUtterance(text.trim());
-    utter.rate = ttsRate;
-    if (KOREAN_RE.test(text)) utter.lang = 'ko-KR';
-    const voice = pickVoice(text);
-    if (voice) utter.voice = voice;
+    const trimmed = text.trim();
+    const hasKorean = KOREAN_RE.test(trimmed);
+    const hasLatin = LATIN_RE.test(trimmed);
+    // 한/영이 둘 다 섞여 있을 때만 굳이 쪼갠다. 한쪽 언어뿐이면 통짜로 읽는 게
+    // 더 자연스럽고(불필요한 끊김이 없다), 어차피 발음도 문제 없다.
+    const segments =
+      hasKorean && hasLatin ? segmentByScript(trimmed) : [{ text: trimmed, lang: hasKorean ? 'ko' : 'en' }];
 
-    utter.onend = hideBar;
-    utter.onerror = hideBar;
+    const koVoice = pickVoiceByLang('ko');
+    const enVoice = pickVoiceByLang('en');
+
+    segments.forEach((seg, i) => {
+      const utter = new SpeechSynthesisUtterance(seg.text);
+      utter.rate = ttsRate;
+      if (seg.lang === 'ko') {
+        utter.lang = 'ko-KR';
+        if (koVoice) utter.voice = koVoice;
+      } else {
+        utter.lang = 'en-US';
+        if (enVoice) utter.voice = enVoice;
+      }
+      // 여러 조각을 이어 speak() 하면 브라우저가 순서대로 재생 큐에 쌓아준다.
+      // 마지막 조각이 끝나야 진짜로 다 읽은 것이므로 종료 처리는 거기에만 건다.
+      if (i === segments.length - 1) {
+        utter.onend = hideBar;
+        utter.onerror = hideBar;
+      }
+      synth.speak(utter);
+    });
 
     showBar(label);
-    synth.speak(utter);
   }
 
   function stopSpeaking() {
