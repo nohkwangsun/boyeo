@@ -2,77 +2,89 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>마크다운 뷰어</title>
-  <meta name="description" content="모바일에서 바로 쓰는 마크다운 뷰어 · 편집기 · 오프라인 PWA" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="모바일에서 마크다운 파일을 편하게 읽는 뷰어" />
+  <meta name="theme-color" content="#ffffff" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="MD 뷰어" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%20role%3D%22img%22%20aria-label%3D%22%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4%20%EB%B7%B0%EC%96%B4%20%EC%95%84%EC%9D%B4%EC%BD%98%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%231e3a8a%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22112%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%3Crect%20x%3D%22120%22%20y%3D%22176%22%20width%3D%22272%22%20height%3D%22200%22%20rx%3D%2216%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M156%20336%20V216%20L206%20276%20L256%20216%20V336%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2220%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M300%20226%20V310%20M300%20310%20L268%20278%20M300%20310%20L332%20278%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2220%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%3C%2Fsvg%3E" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%20role%3D%22img%22%20aria-label%3D%22%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4%20%EB%B7%B0%EC%96%B4%20%EC%95%84%EC%9D%B4%EC%BD%98%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%232563eb%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%231e3a8a%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22112%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%3Crect%20x%3D%22120%22%20y%3D%22176%22%20width%3D%22272%22%20height%3D%22200%22%20rx%3D%2216%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2218%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M156%20336%20V216%20L206%20276%20L256%20216%20V336%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2220%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M300%20226%20V310%20M300%20310%20L268%20278%20M300%20310%20L332%20278%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2220%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%3C%2Fsvg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%20role%3D%22img%22%20aria-label%3D%22%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4%20%EB%B7%B0%EC%96%B4%22%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22114%22%20fill%3D%22%2322262e%22%2F%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23e9ebee%22%20stroke-width%3D%2222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M170%20150h116l70%2070v142a20%2020%200%200%201-20%2020H170a20%2020%200%200%201-20-20V170a20%2020%200%200%201%2020-20z%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M284%20150v74h72%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M186%20330v-74l34%2040%2034-40v74%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%20role%3D%22img%22%20aria-label%3D%22%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4%20%EB%B7%B0%EC%96%B4%22%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22114%22%20fill%3D%22%2322262e%22%2F%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23e9ebee%22%20stroke-width%3D%2222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M170%20150h116l70%2070v142a20%2020%200%200%201-20%2020H170a20%2020%200%200%201-20-20V170a20%2020%200%200%201%2020-20z%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M284%20150v74h72%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M186%20330v-74l34%2040%2034-40v74%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E" />
   <style>
+/* ---------------------------------------------------------------
+   마크다운 뷰어 — 읽기 우선 스타일
+   화면의 주인공은 본문이다. 크롬(상단바/버튼)은 최대한 물러나 있는다.
+   아이콘은 전부 단색 라인 아이콘이며 본문 색상 계열을 상속한다.
+   --------------------------------------------------------------- */
+
 :root {
-  --bg: #f8fafc;
-  --bg-elevated: #ffffff;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
-  --accent: #2563eb;
-  --accent-contrast: #ffffff;
-  --code-bg: #f1f5f9;
-  --code-text: #334155;
-  --scrim: rgba(15, 23, 42, 0.45);
-  --content-font-size: 16px;
+  /* 종이에 가까운 밝은 테마 */
+  --bg: #ffffff;
+  --bg-soft: #f6f7f8;
+  --bg-raised: #ffffff;
+  --text: #1f2328;
+  --text-dim: #656d76;
+  --border: #e6e8eb;
+  --icon: #656d76;
+  --link: #2f6feb;
+  --danger: #b4404a;
+  --scrim: rgba(20, 22, 26, 0.32);
+  --shadow: 0 8px 32px rgba(20, 22, 26, 0.14);
+
+  --content-font-size: 17px;
+  --topbar-h: 48px;
+
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
+
+  --sans: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', Pretendard,
+    'Noto Sans KR', 'Malgun Gothic', 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
 }
 
 html[data-theme='dark'] {
-  --bg: #0f172a;
-  --bg-elevated: #1e293b;
-  --text: #e2e8f0;
-  --text-muted: #94a3b8;
-  --border: #334155;
-  --accent: #60a5fa;
-  --accent-contrast: #0f172a;
-  --code-bg: #0b1220;
-  --code-text: #cbd5e1;
-  --scrim: rgba(0, 0, 0, 0.6);
+  /* 순검정 대신 눈이 편한 딥 그레이 */
+  --bg: #16181d;
+  --bg-soft: #1d2026;
+  --bg-raised: #21252c;
+  --text: #d6d9df;
+  --text-dim: #8b929e;
+  --border: #2a2e37;
+  --icon: #9aa1ac;
+  --link: #6ea8fe;
+  --danger: #e5707b;
+  --scrim: rgba(0, 0, 0, 0.55);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
   html:not([data-theme='light']):not([data-theme='dark']) {
-    --bg: #0f172a;
-    --bg-elevated: #1e293b;
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-    --border: #334155;
-    --accent: #60a5fa;
-    --accent-contrast: #0f172a;
-    --code-bg: #0b1220;
-    --code-text: #cbd5e1;
-    --scrim: rgba(0, 0, 0, 0.6);
+    --bg: #16181d;
+    --bg-soft: #1d2026;
+    --bg-raised: #21252c;
+    --text: #d6d9df;
+    --text-dim: #8b929e;
+    --border: #2a2e37;
+    --icon: #9aa1ac;
+    --link: #6ea8fe;
+    --danger: #e5707b;
+    --scrim: rgba(0, 0, 0, 0.55);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   }
 }
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+[hidden] {
+  display: none !important;
 }
 
 html,
@@ -84,342 +96,433 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR',
-    'Apple SD Gothic Neo', sans-serif;
-  display: flex;
-  flex-direction: column;
+  font-family: var(--sans);
   overflow: hidden;
 }
 
-button {
-  font-family: inherit;
+.sprite {
+  display: none;
 }
 
-/* ---------- Header ---------- */
-.app-header {
-  flex: 0 0 auto;
-  background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border);
-  padding: calc(8px + var(--safe-top)) calc(10px + var(--safe-right)) 0 calc(10px + var(--safe-left));
-  position: sticky;
+/* 라인 아이콘 공통: 채우기 없음, 얇은 선, 색상 상속 */
+.icon {
+  width: 21px;
+  height: 21px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 점 아이콘(목차 불릿, 더보기)은 면으로 그린다 */
+#i-more circle,
+#i-list circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* ---------------- 상단바 ---------------- */
+.topbar {
+  position: fixed;
   top: 0;
-  z-index: 20;
-}
-
-.app-header h1 {
-  font-size: 16px;
-  margin: 0 0 8px;
-  font-weight: 700;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: calc(var(--topbar-h) + var(--safe-top));
+  padding: var(--safe-top) calc(6px + var(--safe-right)) 0 calc(6px + var(--safe-left));
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: transform 0.25s ease, border-color 0.2s ease;
 }
 
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding-bottom: 8px;
+/* 스크롤을 시작하면 그제서야 경계선을 보여준다 */
+.topbar.scrolled {
+  border-bottom-color: var(--border);
 }
 
-.toolbar button {
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 13px;
-  min-height: 36px;
-  cursor: pointer;
+/* 아래로 읽어 내려갈 때는 상단바를 치워 본문에 집중시킨다 */
+.topbar.hidden {
+  transform: translateY(-100%);
+}
+
+.topbar-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
   white-space: nowrap;
-}
-
-.toolbar button:active {
-  transform: scale(0.97);
-}
-
-.toolbar button.primary {
-  background: var(--accent);
-  color: var(--accent-contrast);
-  border-color: var(--accent);
-}
-
-.filename-badge {
-  font-size: 12px;
-  color: var(--text-muted);
-  align-self: center;
-  padding: 0 4px;
-  max-width: 40vw;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-/* ---------- Tabs (mobile view switcher) ---------- */
-.tabs {
+.topbar-actions {
   display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  color: var(--icon);
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.icon-btn:active {
+  background: var(--bg-soft);
+}
+
+.btn-done {
+  border: none;
+  background: none;
+  color: var(--link);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.btn-done:active {
+  background: var(--bg-soft);
+}
+
+/* ---------------- 뷰어 ---------------- */
+.viewer {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding-top: calc(var(--topbar-h) + var(--safe-top));
+}
+
+.doc {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 8px calc(20px + var(--safe-right)) calc(96px + var(--safe-bottom))
+    calc(20px + var(--safe-left));
+  font-size: var(--content-font-size);
+  line-height: 1.78;
+  /* 한글은 단어 중간에서 끊지 않는다. 긴 URL 등만 강제로 접는다. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* ---------------- 빈 상태 ---------------- */
+.empty {
+  position: absolute;
+  inset: calc(var(--topbar-h) + var(--safe-top)) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 32px calc(64px + var(--safe-bottom));
   gap: 4px;
 }
 
-.tab {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  padding: 10px 0;
-  font-size: 14px;
+.empty-icon {
+  width: 44px;
+  height: 44px;
+  fill: none;
+  stroke: var(--text-dim);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+  margin-bottom: 12px;
+}
+
+.empty h2 {
+  margin: 0;
+  font-size: 17px;
   font-weight: 600;
-  border-bottom: 2px solid transparent;
+}
+
+.empty p {
+  margin: 6px 0 22px;
+  max-width: 19rem;
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.empty code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
-.tab.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
+.btn-primary:active {
+  background: var(--bg-soft);
 }
 
-/* ---------- Workspace / panes ---------- */
-.workspace {
-  flex: 1 1 auto;
+.btn-quiet {
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 12px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+/* ---------------- 편집 모드 ---------------- */
+.edit-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--bg);
   display: flex;
-  min-height: 0;
-  padding-left: var(--safe-left);
-  padding-right: var(--safe-right);
+  flex-direction: column;
 }
 
-.pane {
-  flex: 1 1 100%;
-  min-width: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+.edit-mode .topbar {
+  position: static;
+  transform: none;
+  border-bottom-color: var(--border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: var(--bg);
 }
 
-/* mobile: only show the active pane */
-.workspace.view-edit .preview-pane {
-  display: none;
-}
-
-.workspace.view-preview .edit-pane {
-  display: none;
+.edit-mode .topbar-title {
+  text-align: center;
+  color: var(--text);
 }
 
 #editor {
+  flex: 1;
   width: 100%;
-  height: 100%;
   border: none;
-  resize: none;
   outline: none;
+  resize: none;
   background: var(--bg);
   color: var(--text);
-  padding: 16px calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) 16px;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  font-size: var(--content-font-size);
-  line-height: 1.6;
-}
-
-.preview-pane {
-  background: var(--bg-elevated);
-}
-
-#preview {
-  padding: 16px calc(16px + var(--safe-right)) calc(32px + var(--safe-bottom)) 16px;
-  max-width: 780px;
-  margin: 0 auto;
-  font-size: var(--content-font-size);
-}
-
-#preview.empty::before {
-  content: '미리보기가 여기에 표시됩니다.';
-  color: var(--text-muted);
-}
-
-/* ---------- Wide screens: split view ---------- */
-@media (min-width: 860px) {
-  .tabs {
-    display: none;
-  }
-
-  .workspace.view-edit .preview-pane,
-  .workspace.view-preview .edit-pane {
-    display: block;
-  }
-
-  .edit-pane {
-    border-right: 1px solid var(--border);
-  }
-}
-
-/* ---------- Markdown content styling ---------- */
-.markdown-body {
+  font-family: var(--mono);
+  font-size: 15px;
   line-height: 1.7;
-  word-wrap: break-word;
+  padding: 16px calc(18px + var(--safe-right)) calc(24px + var(--safe-bottom))
+    calc(18px + var(--safe-left));
 }
 
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4,
-.markdown-body h5,
-.markdown-body h6 {
+/* ---------------- 본문(마크다운) ---------------- */
+.doc > *:first-child {
+  margin-top: 0;
+}
+
+.doc h1,
+.doc h2,
+.doc h3,
+.doc h4,
+.doc h5,
+.doc h6 {
   font-weight: 700;
   line-height: 1.35;
-  margin: 1.4em 0 0.6em;
-  scroll-margin-top: calc(90px + var(--safe-top));
+  margin: 1.9em 0 0.65em;
+  scroll-margin-top: calc(var(--topbar-h) + var(--safe-top) + 12px);
 }
 
-.markdown-body h1 {
-  font-size: 1.7em;
-  border-bottom: 1px solid var(--border);
+.doc h1 {
+  font-size: 1.55em;
+  letter-spacing: -0.01em;
+}
+
+.doc h2 {
+  font-size: 1.3em;
   padding-bottom: 0.3em;
-}
-
-.markdown-body h2 {
-  font-size: 1.4em;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 0.25em;
 }
 
-.markdown-body h3 {
-  font-size: 1.2em;
+.doc h3 {
+  font-size: 1.12em;
 }
 
-.markdown-body p,
-.markdown-body ul,
-.markdown-body ol,
-.markdown-body blockquote,
-.markdown-body table,
-.markdown-body pre {
-  margin: 0.8em 0;
+.doc h4,
+.doc h5,
+.doc h6 {
+  font-size: 1em;
 }
 
-.markdown-body a {
-  color: var(--accent);
+.doc p,
+.doc ul,
+.doc ol,
+.doc blockquote,
+.doc pre,
+.doc table {
+  margin: 0 0 1.1em;
 }
 
-.markdown-body img {
+.doc a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.doc img {
   max-width: 100%;
+  height: auto;
   border-radius: 8px;
 }
 
-.markdown-body blockquote {
-  margin-left: 0;
-  padding: 0.2em 1em;
-  border-left: 4px solid var(--accent);
-  color: var(--text-muted);
-  background: var(--code-bg);
-  border-radius: 0 8px 8px 0;
+.doc blockquote {
+  padding: 0.1em 0 0.1em 1em;
+  border-left: 3px solid var(--border);
+  color: var(--text-dim);
 }
 
-.markdown-body code {
-  background: var(--code-bg);
-  color: var(--code-text);
+.doc blockquote > *:last-child {
+  margin-bottom: 0;
+}
+
+.doc code {
+  font-family: var(--mono);
+  font-size: 0.87em;
+  background: var(--bg-soft);
   padding: 0.15em 0.4em;
-  border-radius: 4px;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  font-size: 0.9em;
+  border-radius: 5px;
 }
 
-.markdown-body pre {
-  background: var(--code-bg);
-  padding: 12px 14px;
+.doc pre {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
   border-radius: 10px;
+  padding: 13px 15px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  line-height: 1.6;
 }
 
-.markdown-body pre code {
+.doc pre code {
   background: none;
   padding: 0;
   font-size: 0.85em;
 }
 
-.markdown-body table {
-  border-collapse: collapse;
-  width: 100%;
+.doc table {
   display: block;
+  width: 100%;
   overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.93em;
 }
 
-.markdown-body th,
-.markdown-body td {
+.doc th,
+.doc td {
   border: 1px solid var(--border);
-  padding: 6px 10px;
+  padding: 7px 11px;
   text-align: left;
 }
 
-.markdown-body th {
-  background: var(--code-bg);
+.doc th {
+  background: var(--bg-soft);
+  font-weight: 600;
 }
 
-.markdown-body hr {
+.doc hr {
   border: none;
   border-top: 1px solid var(--border);
-  margin: 2em 0;
+  margin: 2.2em 0;
 }
 
-.markdown-body li {
-  margin: 0.25em 0;
+.doc ul,
+.doc ol {
+  padding-left: 1.4em;
 }
 
-.markdown-body input[type='checkbox'] {
-  margin-right: 0.4em;
-  transform: translateY(1px);
+.doc li {
+  margin: 0.3em 0;
 }
 
-/* ---------- TOC drawer ---------- */
-.toc-drawer {
+.doc li::marker {
+  color: var(--text-dim);
+}
+
+.doc input[type='checkbox'] {
+  margin-right: 0.45em;
+  accent-color: var(--text-dim);
+}
+
+.doc li:has(> input[type='checkbox']) {
+  list-style: none;
+  margin-left: -1.25em;
+}
+
+/* ---------------- 목차 서랍 ---------------- */
+.drawer {
   position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
-  width: min(320px, 85vw);
-  background: var(--bg-elevated);
+  z-index: 60;
+  width: min(320px, 84vw);
+  background: var(--bg-raised);
   border-left: 1px solid var(--border);
   transform: translateX(100%);
-  transition: transform 0.22s ease;
-  z-index: 40;
+  transition: transform 0.24s cubic-bezier(0.32, 0.72, 0, 1);
   display: flex;
   flex-direction: column;
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);
 }
 
-.toc-drawer.open {
+.drawer.open {
   transform: translateX(0);
 }
 
-.toc-header {
+.drawer-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  height: var(--topbar-h);
+  padding: 0 6px 0 18px;
   border-bottom: 1px solid var(--border);
+  flex: none;
 }
 
-.toc-header h2 {
-  font-size: 15px;
+.drawer-head h2 {
   margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
 }
 
-.toc-header button {
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 4px 8px;
-}
-
-#toc-list {
+.drawer-body {
   overflow-y: auto;
-  padding: 8px 0;
-}
-
-#toc-list p.toc-empty {
-  color: var(--text-muted);
-  font-size: 13px;
-  padding: 0 16px;
+  padding: 8px 0 16px;
 }
 
 .toc-item {
@@ -427,25 +530,186 @@ button {
   width: 100%;
   text-align: left;
   border: none;
-  background: transparent;
+  background: none;
   color: var(--text);
-  padding: 8px 16px;
-  font-size: 13px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  padding: 9px 18px;
   cursor: pointer;
 }
 
-.toc-item:active {
-  background: var(--code-bg);
+.toc-item[data-level='1'] {
+  font-weight: 600;
 }
 
+.toc-item[data-level='3'],
+.toc-item[data-level='4'],
+.toc-item[data-level='5'],
+.toc-item[data-level='6'] {
+  color: var(--text-dim);
+  font-size: 13.5px;
+}
+
+.toc-item:active {
+  background: var(--bg-soft);
+}
+
+.toc-empty {
+  margin: 0;
+  padding: 4px 18px;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+
+/* ---------------- 메뉴 시트 ---------------- */
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  margin: 0 auto;
+  max-width: 460px;
+  background: var(--bg-raised);
+  border-radius: 16px 16px 0 0;
+  box-shadow: var(--shadow);
+  padding: 6px 0 calc(10px + var(--safe-bottom));
+  transform: translateY(102%);
+  transition: transform 0.26s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.sheet.open {
+  transform: translateY(0);
+}
+
+.sheet-grip {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  margin: 6px auto 10px;
+}
+
+.sheet-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15.5px;
+  padding: 13px 20px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sheet-row .icon {
+  color: var(--icon);
+}
+
+.sheet-row:active {
+  background: var(--bg-soft);
+}
+
+.sheet-row.danger {
+  color: var(--danger);
+}
+
+.sheet-row.danger .icon {
+  color: var(--danger);
+}
+
+.sheet-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 20px;
+}
+
+.sheet-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 20px;
+}
+
+.sheet-label {
+  font-size: 15.5px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.stepper button {
+  width: 40px;
+  height: 34px;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 17px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.stepper button:active {
+  background: var(--bg-soft);
+}
+
+.stepper span {
+  min-width: 34px;
+  text-align: center;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  line-height: 34px;
+}
+
+.segmented {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.segmented button {
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 13.5px;
+  padding: 8px 13px;
+  cursor: pointer;
+}
+
+.segmented button + button {
+  border-left: 1px solid var(--border);
+}
+
+.segmented button.active {
+  background: var(--bg-soft);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ---------------- 스크림 / 드롭존 ---------------- */
 .scrim {
   position: fixed;
   inset: 0;
+  z-index: 50;
   background: var(--scrim);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.22s ease;
-  z-index: 30;
+  transition: opacity 0.24s ease;
 }
 
 .scrim.open {
@@ -453,96 +717,207 @@ button {
   pointer-events: auto;
 }
 
-/* ---------- Drag & drop overlay ---------- */
-.dropzone-overlay {
+.dropzone {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 70;
   display: none;
   align-items: center;
   justify-content: center;
   background: var(--scrim);
-  color: #fff;
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
-  padding: 24px;
   pointer-events: none;
+  padding: 32px;
 }
 
-.dropzone-overlay.active {
+.dropzone.active {
   display: flex;
 }
 
-.dropzone-overlay p {
-  border: 2px dashed #fff;
-  border-radius: 16px;
-  padding: 32px 24px;
+.dropzone p {
   margin: 0;
+  padding: 30px 36px;
+  border: 2px dashed rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-@media (max-width: 480px) {
-  .app-header h1 {
-    font-size: 15px;
+/* ---------------- 넓은 화면 ---------------- */
+@media (min-width: 900px) {
+  :root {
+    --topbar-h: 52px;
   }
 
-  .toolbar button {
-    padding: 8px;
-    font-size: 12px;
+  .doc {
+    padding-top: 16px;
+  }
+
+  .sheet {
+    border-radius: 16px;
+    bottom: 16px;
+    right: 16px;
+    left: auto;
+    margin: 0;
+    width: 360px;
+    transform: translateY(calc(100% + 32px));
+  }
+
+  .sheet.open {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
   }
 }
 
   </style>
 </head>
 <body>
-  <header class="app-header">
-    <h1>📄 마크다운 뷰어</h1>
-    <div class="toolbar">
-      <button id="btn-open" type="button">📂 열기</button>
-      <input type="file" id="file-input" accept=".md,.markdown,.mdown,.mkd,.txt,text/markdown,text/plain" hidden />
-      <button id="btn-save" type="button">💾 저장</button>
-      <button id="btn-toc" type="button">📑 목차</button>
-      <button id="btn-font-minus" type="button" aria-label="글자 작게">A-</button>
-      <button id="btn-font-plus" type="button" aria-label="글자 크게">A+</button>
-      <button id="btn-theme" type="button" aria-label="테마 전환">🌓</button>
-      <button id="btn-clear" type="button">🗑️ 지우기</button>
-      <span id="filename-badge" class="filename-badge"></span>
-    </div>
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-view="edit" role="tab" aria-selected="true">편집</button>
-      <button class="tab" data-view="preview" role="tab" aria-selected="false">미리보기</button>
+  <!-- 아이콘 스프라이트: 단색 라인 아이콘, 본문 색상을 그대로 상속한다 -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-list" viewBox="0 0 24 24">
+      <line x1="9" y1="6" x2="20" y2="6" /><line x1="9" y1="12" x2="20" y2="12" /><line x1="9" y1="18" x2="20" y2="18" />
+      <circle cx="4.5" cy="6" r="1.1" /><circle cx="4.5" cy="12" r="1.1" /><circle cx="4.5" cy="18" r="1.1" />
+    </symbol>
+    <symbol id="i-more" viewBox="0 0 24 24">
+      <circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" />
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24">
+      <path d="M21 19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2z" />
+    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24">
+      <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+    </symbol>
+    <symbol id="i-back" viewBox="0 0 24 24">
+      <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><polyline points="14 3 14 8 19 8" />
+      <line x1="15" y1="13" x2="9" y2="13" /><line x1="15" y1="17" x2="9" y2="17" />
+    </symbol>
+  </svg>
+
+  <header class="topbar" id="topbar">
+    <h1 class="topbar-title" id="doc-title">마크다운 뷰어</h1>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="btn-toc" type="button" aria-label="목차">
+        <svg class="icon"><use href="#i-list" /></svg>
+      </button>
+      <button class="icon-btn" id="btn-menu" type="button" aria-label="메뉴">
+        <svg class="icon"><use href="#i-more" /></svg>
+      </button>
     </div>
   </header>
 
-  <main class="workspace view-edit" id="workspace">
-    <section class="pane edit-pane" id="edit-pane">
-      <label for="editor" class="sr-only">마크다운 편집기</label>
-      <textarea
-        id="editor"
-        placeholder="여기에 마크다운을 입력하거나 붙여넣으세요...&#10;&#10;파일 열기 버튼을 누르거나, 파일을 화면에 끌어다 놓거나,&#10;다른 앱에서 '공유'로 이 뷰어를 선택할 수도 있습니다."
-        spellcheck="false"
-        autocapitalize="off"
-        autocomplete="off"
-        autocorrect="off"
-      ></textarea>
-    </section>
-    <section class="pane preview-pane" id="preview-pane">
-      <article id="preview" class="markdown-body empty"></article>
+  <main class="viewer" id="viewer">
+    <article class="doc" id="preview"></article>
+
+    <section class="empty" id="empty">
+      <svg class="empty-icon"><use href="#i-doc" /></svg>
+      <h2>읽을 문서를 열어주세요</h2>
+      <p>기기에 저장된 <code>.md</code> 파일을 그대로 열어볼 수 있습니다.</p>
+      <button class="btn-primary" id="btn-open-primary" type="button">파일 열기</button>
+      <button class="btn-quiet" id="btn-write" type="button">직접 작성하기</button>
     </section>
   </main>
 
-  <div class="scrim" id="scrim"></div>
-  <aside class="toc-drawer" id="toc-drawer" aria-hidden="true">
-    <div class="toc-header">
+  <input
+    type="file"
+    id="file-input"
+    accept=".md,.markdown,.mdown,.mkd,.txt,text/markdown,text/plain"
+    hidden
+  />
+
+  <!-- 편집: 뷰어와 분리된 별도 모드 -->
+  <div class="edit-mode" id="edit-mode" hidden>
+    <header class="topbar">
+      <button class="icon-btn" id="btn-edit-back" type="button" aria-label="뷰어로 돌아가기">
+        <svg class="icon"><use href="#i-back" /></svg>
+      </button>
+      <h2 class="topbar-title">편집</h2>
+      <div class="topbar-actions">
+        <button class="btn-done" id="btn-edit-done" type="button">완료</button>
+      </div>
+    </header>
+    <textarea
+      id="editor"
+      placeholder="마크다운을 입력하세요..."
+      spellcheck="false"
+      autocapitalize="off"
+      autocomplete="off"
+      autocorrect="off"
+    ></textarea>
+  </div>
+
+  <!-- 목차 -->
+  <aside class="drawer" id="toc-drawer" aria-hidden="true">
+    <div class="drawer-head">
       <h2>목차</h2>
-      <button id="btn-toc-close" type="button" aria-label="목차 닫기">✕</button>
+      <button class="icon-btn" id="btn-toc-close" type="button" aria-label="닫기">
+        <svg class="icon"><use href="#i-close" /></svg>
+      </button>
     </div>
-    <nav id="toc-list"></nav>
+    <nav class="drawer-body" id="toc-list"></nav>
   </aside>
 
-  <div class="dropzone-overlay" id="dropzone-overlay">
-    <p>여기에 마크다운 파일을 놓으세요</p>
+  <!-- 메뉴 -->
+  <div class="sheet" id="menu-sheet" aria-hidden="true">
+    <div class="sheet-grip"></div>
+
+    <button class="sheet-row" id="btn-open" type="button">
+      <svg class="icon"><use href="#i-folder" /></svg><span>파일 열기</span>
+    </button>
+    <button class="sheet-row" id="btn-edit" type="button">
+      <svg class="icon"><use href="#i-edit" /></svg><span>편집</span>
+    </button>
+    <button class="sheet-row" id="btn-save" type="button">
+      <svg class="icon"><use href="#i-download" /></svg><span>파일로 저장</span>
+    </button>
+
+    <div class="sheet-sep"></div>
+
+    <div class="sheet-field">
+      <span class="sheet-label">글자 크기</span>
+      <div class="stepper">
+        <button id="btn-font-minus" type="button" aria-label="글자 작게">−</button>
+        <span id="font-value">17</span>
+        <button id="btn-font-plus" type="button" aria-label="글자 크게">+</button>
+      </div>
+    </div>
+
+    <div class="sheet-field">
+      <span class="sheet-label">테마</span>
+      <div class="segmented" id="theme-seg">
+        <button data-theme="auto" type="button">자동</button>
+        <button data-theme="light" type="button">밝게</button>
+        <button data-theme="dark" type="button">어둡게</button>
+      </div>
+    </div>
+
+    <div class="sheet-sep"></div>
+
+    <button class="sheet-row danger" id="btn-clear" type="button">
+      <svg class="icon"><use href="#i-trash" /></svg><span>내용 비우기</span>
+    </button>
   </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <div class="dropzone" id="dropzone"><p>마크다운 파일을 놓으세요</p></div>
 
   <script>
 /**
@@ -563,147 +938,166 @@ button {
 (() => {
   'use strict';
 
-  // ---------- Elements ----------
-  const editor = document.getElementById('editor');
-  const preview = document.getElementById('preview');
-  const workspace = document.getElementById('workspace');
-  const tabs = Array.from(document.querySelectorAll('.tab'));
-  const fileInput = document.getElementById('file-input');
-  const filenameBadge = document.getElementById('filename-badge');
+  // ---------------- 요소 ----------------
+  const $ = (id) => document.getElementById(id);
 
-  const btnOpen = document.getElementById('btn-open');
-  const btnSave = document.getElementById('btn-save');
-  const btnToc = document.getElementById('btn-toc');
-  const btnTocClose = document.getElementById('btn-toc-close');
-  const btnFontMinus = document.getElementById('btn-font-minus');
-  const btnFontPlus = document.getElementById('btn-font-plus');
-  const btnTheme = document.getElementById('btn-theme');
-  const btnClear = document.getElementById('btn-clear');
+  const topbar = $('topbar');
+  const docTitle = $('doc-title');
+  const viewer = $('viewer');
+  const preview = $('preview');
+  const empty = $('empty');
+  const editor = $('editor');
+  const editMode = $('edit-mode');
+  const fileInput = $('file-input');
+  const tocDrawer = $('toc-drawer');
+  const tocList = $('toc-list');
+  const menuSheet = $('menu-sheet');
+  const scrim = $('scrim');
+  const dropzone = $('dropzone');
+  const fontValue = $('font-value');
+  const themeSeg = $('theme-seg');
 
-  const tocDrawer = document.getElementById('toc-drawer');
-  const tocList = document.getElementById('toc-list');
-  const scrim = document.getElementById('scrim');
-  const dropzoneOverlay = document.getElementById('dropzone-overlay');
+  // ---------------- 저장소 키 ----------------
+  const K_DOC = 'md-viewer-draft';
+  const K_NAME = 'md-viewer-filename';
+  const K_THEME = 'md-viewer-theme';
+  const K_FONT = 'md-viewer-font-size';
 
-  // ---------- Storage keys ----------
-  const LS_DRAFT = 'md-viewer-draft';
-  const LS_FILENAME = 'md-viewer-filename';
-  const LS_THEME = 'md-viewer-theme';
-  const LS_FONT_SIZE = 'md-viewer-font-size';
-  const LS_VIEW = 'md-viewer-view';
+  const FONT_MIN = 14;
+  const FONT_MAX = 26;
+  const FONT_DEFAULT = 17;
 
-  const MIN_FONT = 13;
-  const MAX_FONT = 26;
-  const DEFAULT_FONT = 16;
+  const store = {
+    get(key) {
+      try {
+        return localStorage.getItem(key);
+      } catch (_) {
+        return null;
+      }
+    },
+    set(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch (_) {}
+    },
+  };
 
-  let currentFilename = '';
+  let content = '';
+  let filename = '';
+  let fontSize = FONT_DEFAULT;
 
-  // ---------- Markdown rendering ----------
+  // ---------------- 렌더링 ----------------
   if (window.marked) {
-    marked.setOptions({
-      gfm: true,
-      breaks: true,
-    });
+    marked.setOptions({ gfm: true, breaks: true });
   }
 
-  function renderMarkdown(source) {
-    if (!source || !source.trim()) {
+  function render() {
+    const hasContent = content.trim().length > 0;
+    empty.hidden = hasContent;
+    preview.hidden = !hasContent;
+
+    if (!hasContent) {
       preview.innerHTML = '';
-      preview.classList.add('empty');
       tocList.innerHTML = '';
-      renderTocEmptyState();
+      docTitle.textContent = '마크다운 뷰어';
       return;
     }
-    preview.classList.remove('empty');
 
-    let html = '';
+    let html;
     try {
-      html = window.marked ? window.marked.parse(source) : escapeHtml(source);
+      html = window.marked ? marked.parse(content) : escapeHtml(content);
     } catch (err) {
-      html = `<p>마크다운을 렌더링하는 중 오류가 발생했습니다: ${escapeHtml(String(err))}</p>`;
+      html = `<p>렌더링 오류: ${escapeHtml(String(err))}</p>`;
     }
 
-    const clean = window.DOMPurify
-      ? window.DOMPurify.sanitize(html, { ADD_ATTR: ['target'] })
+    preview.innerHTML = window.DOMPurify
+      ? DOMPurify.sanitize(html, { ADD_ATTR: ['target'] })
       : html;
 
-    preview.innerHTML = clean;
-    postProcessPreview();
-    buildToc();
-  }
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  function postProcessPreview() {
-    // 외부 링크는 새 탭으로, 이미지는 지연 로딩
     preview.querySelectorAll('a[href]').forEach((a) => {
-      const href = a.getAttribute('href') || '';
-      if (/^https?:\/\//i.test(href)) {
+      if (/^https?:\/\//i.test(a.getAttribute('href') || '')) {
         a.setAttribute('target', '_blank');
         a.setAttribute('rel', 'noopener noreferrer');
       }
     });
-    preview.querySelectorAll('img').forEach((img) => {
-      img.setAttribute('loading', 'lazy');
-    });
+    preview.querySelectorAll('img').forEach((img) => img.setAttribute('loading', 'lazy'));
+
+    buildToc();
+    updateTitle();
   }
 
-  // ---------- Table of contents ----------
-  const usedSlugs = new Map();
-
-  function slugify(text) {
-    const base = text
-      .trim()
-      .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s-]/gu, '')
-      .replace(/\s+/g, '-');
-    const clean = base || 'section';
-    const count = usedSlugs.get(clean) || 0;
-    usedSlugs.set(clean, count + 1);
-    return count === 0 ? clean : `${clean}-${count}`;
+  function escapeHtml(str) {
+    const el = document.createElement('div');
+    el.textContent = str;
+    return el.innerHTML;
   }
 
+  // 상단바에는 파일명을, 없으면 문서의 첫 제목을 보여준다.
+  function updateTitle() {
+    if (filename) {
+      docTitle.textContent = filename;
+      return;
+    }
+    const first = preview.querySelector('h1, h2, h3');
+    docTitle.textContent = first ? first.textContent.trim() : '마크다운 뷰어';
+  }
+
+  function setContent(text, name) {
+    content = text || '';
+    if (name !== undefined) {
+      filename = name;
+      store.set(K_NAME, name);
+    }
+    editor.value = content;
+    store.set(K_DOC, content);
+    render();
+  }
+
+  // ---------------- 목차 ----------------
   function buildToc() {
-    usedSlugs.clear();
-    const headings = Array.from(preview.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+    const headings = preview.querySelectorAll('h1, h2, h3, h4, h5, h6');
     tocList.innerHTML = '';
 
     if (!headings.length) {
-      renderTocEmptyState();
+      tocList.innerHTML = '<p class="toc-empty">제목이 없는 문서입니다.</p>';
       return;
     }
 
+    const used = new Map();
     const frag = document.createDocumentFragment();
+
     headings.forEach((heading) => {
-      const id = slugify(heading.textContent || '');
-      heading.id = id;
-      const level = Number(heading.tagName.substring(1));
+      const text = (heading.textContent || '').trim();
+      const base =
+        text
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}\s-]/gu, '')
+          .replace(/\s+/g, '-') || 'section';
+      const seen = used.get(base) || 0;
+      used.set(base, seen + 1);
+      heading.id = seen === 0 ? base : `${base}-${seen}`;
+
+      const level = Number(heading.tagName[1]);
       const item = document.createElement('button');
       item.type = 'button';
       item.className = 'toc-item';
-      item.style.paddingLeft = `${16 + (level - 1) * 12}px`;
-      item.textContent = heading.textContent;
+      item.dataset.level = String(level);
+      item.style.paddingLeft = `${18 + (level - 1) * 13}px`;
+      item.textContent = text;
       item.addEventListener('click', () => {
-        setView('preview');
-        closeToc();
-        requestAnimationFrame(() => {
-          heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
+        closeOverlays();
+        showTopbar();
+        requestAnimationFrame(() => heading.scrollIntoView({ behavior: 'smooth', block: 'start' }));
       });
       frag.appendChild(item);
     });
+
     tocList.appendChild(frag);
   }
 
-  function renderTocEmptyState() {
-    tocList.innerHTML = '<p class="toc-empty">표시할 목차가 없습니다.</p>';
-  }
-
+  // ---------------- 오버레이(목차/메뉴) ----------------
   function openToc() {
+    closeSheet();
     tocDrawer.classList.add('open');
     tocDrawer.setAttribute('aria-hidden', 'false');
     scrim.classList.add('open');
@@ -712,187 +1106,222 @@ button {
   function closeToc() {
     tocDrawer.classList.remove('open');
     tocDrawer.setAttribute('aria-hidden', 'true');
+  }
+
+  function openSheet() {
+    closeToc();
+    menuSheet.classList.add('open');
+    menuSheet.setAttribute('aria-hidden', 'false');
+    scrim.classList.add('open');
+  }
+
+  function closeSheet() {
+    menuSheet.classList.remove('open');
+    menuSheet.setAttribute('aria-hidden', 'true');
+  }
+
+  function closeOverlays() {
+    closeToc();
+    closeSheet();
     scrim.classList.remove('open');
   }
 
-  btnToc.addEventListener('click', () => {
-    tocDrawer.classList.contains('open') ? closeToc() : openToc();
-  });
-  btnTocClose.addEventListener('click', closeToc);
-  scrim.addEventListener('click', closeToc);
+  $('btn-toc').addEventListener('click', openToc);
+  $('btn-toc-close').addEventListener('click', closeOverlays);
+  $('btn-menu').addEventListener('click', openSheet);
+  scrim.addEventListener('click', closeOverlays);
 
-  // ---------- View switching (edit / preview tabs, mobile) ----------
-  function setView(view) {
-    workspace.classList.remove('view-edit', 'view-preview');
-    workspace.classList.add(`view-${view}`);
-    tabs.forEach((tab) => {
-      const active = tab.dataset.view === view;
-      tab.classList.toggle('active', active);
-      tab.setAttribute('aria-selected', String(active));
-    });
-    try {
-      localStorage.setItem(LS_VIEW, view);
-    } catch (_) {}
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeOverlays();
+  });
+
+  // ---------------- 편집 모드 ----------------
+  function openEditor() {
+    closeOverlays();
+    editor.value = content;
+    editMode.hidden = false;
+    requestAnimationFrame(() => editor.focus());
   }
 
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', () => setView(tab.dataset.view));
-  });
+  function closeEditor() {
+    content = editor.value;
+    store.set(K_DOC, content);
+    // 파일명은 유지하되, 내용이 바뀌었으므로 제목을 다시 계산한다
+    render();
+    editMode.hidden = true;
+    showTopbar();
+  }
 
-  // ---------- Editor input / autosave ----------
-  let saveTimer = null;
+  $('btn-edit').addEventListener('click', openEditor);
+  $('btn-write').addEventListener('click', openEditor);
+  $('btn-edit-done').addEventListener('click', closeEditor);
+  $('btn-edit-back').addEventListener('click', closeEditor);
+
+  let editSaveTimer = null;
   editor.addEventListener('input', () => {
-    renderMarkdown(editor.value);
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      try {
-        localStorage.setItem(LS_DRAFT, editor.value);
-      } catch (_) {}
-    }, 300);
+    clearTimeout(editSaveTimer);
+    editSaveTimer = setTimeout(() => store.set(K_DOC, editor.value), 400);
   });
 
-  function setEditorContent(text, filename) {
-    editor.value = text;
-    renderMarkdown(text);
-    try {
-      localStorage.setItem(LS_DRAFT, text);
-    } catch (_) {}
-    if (filename !== undefined) {
-      currentFilename = filename;
-      filenameBadge.textContent = filename;
-      try {
-        localStorage.setItem(LS_FILENAME, filename);
-      } catch (_) {}
-    }
+  // ---------------- 파일 열기 / 저장 ----------------
+  function pickFile() {
+    closeOverlays();
+    fileInput.click();
   }
 
-  // ---------- Open file ----------
-  btnOpen.addEventListener('click', () => fileInput.click());
+  $('btn-open').addEventListener('click', pickFile);
+  $('btn-open-primary').addEventListener('click', pickFile);
+
   fileInput.addEventListener('change', () => {
     const file = fileInput.files && fileInput.files[0];
-    if (!file) return;
-    readFile(file);
+    if (file) readFile(file);
     fileInput.value = '';
   });
 
   function readFile(file) {
     const reader = new FileReader();
     reader.onload = () => {
-      setEditorContent(String(reader.result || ''), file.name);
-      setView('preview');
+      setContent(String(reader.result || ''), file.name);
+      viewer.scrollTop = 0;
+      showTopbar();
     };
-    reader.onerror = () => {
-      alert('파일을 읽는 중 오류가 발생했습니다.');
-    };
+    reader.onerror = () => alert('파일을 읽지 못했습니다.');
     reader.readAsText(file);
   }
 
-  // ---------- Drag & drop ----------
-  let dragCounter = 0;
-  window.addEventListener('dragenter', (e) => {
-    if (!e.dataTransfer || !e.dataTransfer.types.includes('Files')) return;
-    e.preventDefault();
-    dragCounter++;
-    dropzoneOverlay.classList.add('active');
-  });
-  window.addEventListener('dragover', (e) => {
-    if (!e.dataTransfer || !e.dataTransfer.types.includes('Files')) return;
-    e.preventDefault();
-  });
-  window.addEventListener('dragleave', () => {
-    dragCounter = Math.max(0, dragCounter - 1);
-    if (dragCounter === 0) dropzoneOverlay.classList.remove('active');
-  });
-  window.addEventListener('drop', (e) => {
-    if (!e.dataTransfer || !e.dataTransfer.files.length) return;
-    e.preventDefault();
-    dragCounter = 0;
-    dropzoneOverlay.classList.remove('active');
-    readFile(e.dataTransfer.files[0]);
-  });
-
-  // ---------- Save (download) ----------
-  btnSave.addEventListener('click', () => {
-    const blob = new Blob([editor.value], { type: 'text/markdown;charset=utf-8' });
+  $('btn-save').addEventListener('click', () => {
+    closeOverlays();
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = currentFilename && /\.\w+$/.test(currentFilename) ? currentFilename : 'document.md';
+    a.download = filename && /\.\w+$/.test(filename) ? filename : 'document.md';
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
 
-  // ---------- Clear ----------
-  btnClear.addEventListener('click', () => {
-    if (editor.value.trim() && !confirm('편집 중인 내용을 모두 지울까요?')) return;
-    setEditorContent('', '');
+  $('btn-clear').addEventListener('click', () => {
+    closeOverlays();
+    if (content.trim() && !confirm('현재 문서를 비울까요?')) return;
+    setContent('', '');
   });
 
-  // ---------- Font size ----------
-  function applyFontSize(size) {
-    const clamped = Math.min(MAX_FONT, Math.max(MIN_FONT, size));
-    document.documentElement.style.setProperty('--content-font-size', `${clamped}px`);
-    try {
-      localStorage.setItem(LS_FONT_SIZE, String(clamped));
-    } catch (_) {}
-    return clamped;
+  // 드래그 앤 드롭(데스크톱)
+  let dragDepth = 0;
+  const hasFiles = (e) => e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files');
+
+  window.addEventListener('dragenter', (e) => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    dragDepth++;
+    dropzone.classList.add('active');
+  });
+  window.addEventListener('dragover', (e) => {
+    if (hasFiles(e)) e.preventDefault();
+  });
+  window.addEventListener('dragleave', () => {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (!dragDepth) dropzone.classList.remove('active');
+  });
+  window.addEventListener('drop', (e) => {
+    if (!hasFiles(e)) return;
+    e.preventDefault();
+    dragDepth = 0;
+    dropzone.classList.remove('active');
+    if (e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]);
+  });
+
+  // ---------------- 글자 크기 ----------------
+  function applyFont(size) {
+    fontSize = Math.min(FONT_MAX, Math.max(FONT_MIN, size));
+    document.documentElement.style.setProperty('--content-font-size', `${fontSize}px`);
+    fontValue.textContent = String(fontSize);
+    store.set(K_FONT, String(fontSize));
   }
 
-  let fontSize = DEFAULT_FONT;
-  btnFontMinus.addEventListener('click', () => {
-    fontSize = applyFontSize(fontSize - 1);
-  });
-  btnFontPlus.addEventListener('click', () => {
-    fontSize = applyFontSize(fontSize + 1);
-  });
+  $('btn-font-minus').addEventListener('click', () => applyFont(fontSize - 1));
+  $('btn-font-plus').addEventListener('click', () => applyFont(fontSize + 1));
 
-  // ---------- Theme ----------
+  // ---------------- 테마 ----------------
+  const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
   function applyTheme(theme) {
     if (theme === 'light' || theme === 'dark') {
       document.documentElement.setAttribute('data-theme', theme);
     } else {
+      theme = 'auto';
       document.documentElement.removeAttribute('data-theme');
     }
-    const metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) {
-      const isDark =
-        theme === 'dark' ||
-        (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      metaTheme.setAttribute('content', isDark ? '#0f172a' : '#f8fafc');
-    }
+
+    themeSeg.querySelectorAll('button').forEach((b) => {
+      b.classList.toggle('active', b.dataset.theme === theme);
+    });
+
+    const dark = theme === 'dark' || (theme === 'auto' && darkQuery.matches);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', dark ? '#16181d' : '#ffffff');
+
+    store.set(K_THEME, theme);
   }
 
-  btnTheme.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme');
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const effectiveDark = current === 'dark' || (!current && systemDark);
-    const next = effectiveDark ? 'light' : 'dark';
-    applyTheme(next);
-    try {
-      localStorage.setItem(LS_THEME, next);
-    } catch (_) {}
+  themeSeg.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-theme]');
+    if (btn) applyTheme(btn.dataset.theme);
   });
 
-  // ---------- Share target payload pickup ----------
-  async function checkSharedContent() {
+  darkQuery.addEventListener('change', () => {
+    if ((store.get(K_THEME) || 'auto') === 'auto') applyTheme('auto');
+  });
+
+  // ---------------- 상단바 자동 숨김 ----------------
+  let lastScroll = 0;
+  let ticking = false;
+
+  function showTopbar() {
+    topbar.classList.remove('hidden');
+  }
+
+  viewer.addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = viewer.scrollTop;
+        topbar.classList.toggle('scrolled', y > 4);
+
+        // 아래로 충분히 내려간 뒤에만 숨기고, 위로 올리면 즉시 되돌린다
+        if (y > 72 && y > lastScroll + 6) {
+          topbar.classList.add('hidden');
+        } else if (y < lastScroll - 6 || y <= 72) {
+          showTopbar();
+        }
+
+        lastScroll = y;
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
+
+  // ---------------- 공유로 받기(Web Share Target) ----------------
+  async function pickUpSharedContent() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('shared') !== '1') return;
 
-    // URL을 정리해 새로고침 시 중복 처리되지 않도록 함
-    const cleanUrl = window.location.pathname;
-    window.history.replaceState({}, '', cleanUrl);
-
+    window.history.replaceState({}, '', window.location.pathname);
     if (!('caches' in window)) return;
+
     try {
       const cache = await caches.open('md-viewer-share-v1');
-      const response = await cache.match('shared-payload');
-      if (!response) return;
-      const data = await response.json();
+      const res = await cache.match('shared-payload');
+      if (!res) return;
+      const data = await res.json();
       if (data && data.content) {
-        setEditorContent(data.content, data.filename || '공유된 내용');
-        setView('preview');
+        setContent(data.content, data.filename || '');
+        viewer.scrollTop = 0;
       }
       await cache.delete('shared-payload');
     } catch (err) {
@@ -900,41 +1329,23 @@ button {
     }
   }
 
-  // ---------- Init ----------
+  // ---------------- 초기화 ----------------
   function init() {
-    let theme = null;
-    let savedFont = null;
-    let savedView = null;
-    let draft = '';
-    let savedFilename = '';
+    applyTheme(store.get(K_THEME) || 'auto');
 
-    try {
-      theme = localStorage.getItem(LS_THEME);
-      savedFont = Number(localStorage.getItem(LS_FONT_SIZE));
-      savedView = localStorage.getItem(LS_VIEW);
-      draft = localStorage.getItem(LS_DRAFT) || '';
-      savedFilename = localStorage.getItem(LS_FILENAME) || '';
-    } catch (_) {}
+    const savedFont = Number(store.get(K_FONT));
+    applyFont(Number.isFinite(savedFont) && savedFont ? savedFont : FONT_DEFAULT);
 
-    applyTheme(theme);
-    fontSize = applyFontSize(Number.isFinite(savedFont) && savedFont ? savedFont : DEFAULT_FONT);
-    setView(savedView === 'preview' ? 'preview' : 'edit');
+    filename = store.get(K_NAME) || '';
+    content = store.get(K_DOC) || '';
+    editor.value = content;
+    render();
 
-    if (draft) {
-      currentFilename = savedFilename;
-      filenameBadge.textContent = savedFilename;
-      editor.value = draft;
-      renderMarkdown(draft);
-    } else {
-      renderMarkdown('');
-    }
-
-    checkSharedContent();
+    pickUpSharedContent();
 
     // 서비스 워커는 http(s)에서만 동작한다.
-    // 단일 HTML 파일을 file://로 직접 열었을 때는 등록을 시도하지 않는다.
-    const isHttp = /^https?:$/.test(window.location.protocol);
-    if (isHttp && 'serviceWorker' in navigator) {
+    // 단일 HTML 파일을 file:// 로 직접 열었을 때는 등록을 시도하지 않는다.
+    if (/^https?:$/.test(window.location.protocol) && 'serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch((err) => {
           console.warn('서비스 워커 등록 실패:', err);

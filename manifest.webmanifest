@@ -8,8 +8,8 @@
   "orientation": "any",
   "lang": "ko",
   "dir": "ltr",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "categories": ["productivity", "utilities"],
   "icons": [
     {
