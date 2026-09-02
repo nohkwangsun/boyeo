@@ -802,6 +802,40 @@ body {
   background: color-mix(in srgb, var(--link) 14%, transparent);
 }
 
+/* ---------------- 토스트 ---------------- */
+/* 하단에는 읽어주기 재생바가 있으므로 위쪽에 띄운다 */
+.toast {
+  position: fixed;
+  top: calc(var(--topbar-h) + var(--safe-top) + 10px);
+  left: 50%;
+  transform: translate(-50%, -8px);
+  z-index: 80;
+  max-width: min(88vw, 420px);
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+  word-break: keep-all;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast.error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 /* ---------------- 스크림 / 드롭존 ---------------- */
 .scrim {
   position: fixed;

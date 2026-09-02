@@ -817,6 +817,40 @@ body {
   background: color-mix(in srgb, var(--link) 14%, transparent);
 }
 
+/* ---------------- 토스트 ---------------- */
+/* 하단에는 읽어주기 재생바가 있으므로 위쪽에 띄운다 */
+.toast {
+  position: fixed;
+  top: calc(var(--topbar-h) + var(--safe-top) + 10px);
+  left: 50%;
+  transform: translate(-50%, -8px);
+  z-index: 80;
+  max-width: min(88vw, 420px);
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+  word-break: keep-all;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast.error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 /* ---------------- 스크림 / 드롭존 ---------------- */
 .scrim {
   position: fixed;
@@ -1078,6 +1112,9 @@ body {
     </button>
   </div>
 
+  <!-- 저장 결과 등을 알리는 짧은 안내 (조용히 실패하지 않도록) -->
+  <div class="toast" id="toast" hidden></div>
+
   <div class="scrim" id="scrim"></div>
 
   <div class="dropzone" id="dropzone"><p>마크다운 파일을 놓으세요</p></div>
@@ -1119,6 +1156,7 @@ body {
   const dropzone = $('dropzone');
   const fontValue = $('font-value');
   const themeSeg = $('theme-seg');
+  const toastEl = $('toast');
   const ttsBar = $('tts-bar');
   const ttsLabel = $('tts-label');
   const btnTtsToggle = $('btn-tts-toggle');
@@ -1203,6 +1241,23 @@ body {
     const el = document.createElement('div');
     el.textContent = str;
     return el.innerHTML;
+  }
+
+  // 짧은 안내. 저장처럼 결과가 눈에 안 보이는 동작에 쓴다.
+  let toastTimer = null;
+  function toast(message, isError) {
+    toastEl.textContent = message;
+    toastEl.classList.toggle('error', !!isError);
+    toastEl.hidden = false;
+    requestAnimationFrame(() => toastEl.classList.add('visible'));
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toastEl.classList.remove('visible');
+      setTimeout(() => {
+        if (!toastEl.classList.contains('visible')) toastEl.hidden = true;
+      }, 220);
+    }, 2600);
   }
 
   // 상단바에는 파일명을, 없으면 문서의 첫 제목을 보여준다.
@@ -1372,18 +1427,76 @@ body {
     reader.readAsText(file);
   }
 
-  $('btn-save').addEventListener('click', () => {
+  function saveName() {
+    return filename && /\.\w+$/.test(filename) ? filename : 'document.md';
+  }
+
+  // 저장은 환경마다 되는 방법이 다르다.
+  //  - 데스크탑 앱: 앱이 네이티브 저장 대화상자로 직접 파일을 쓴다
+  //  - 모바일: 공유 시트로 내보낸다 (file:// 에서는 다운로드가 막히는 경우가 많다)
+  //  - PC 브라우저: 일반 다운로드
+  // 어느 쪽이든 결과를 토스트로 알려서 "눌러도 아무 일이 없는" 상황을 없앤다.
+  async function saveDocument() {
     closeOverlays();
-    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename && /\.\w+$/.test(filename) ? filename : 'document.md';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
+
+    if (!content.trim()) {
+      toast('저장할 내용이 없습니다.', true);
+      return;
+    }
+
+    const name = saveName();
+
+    // 1) 데스크탑 앱
+    if (desktop && typeof desktop.saveFile === 'function') {
+      try {
+        const res = await desktop.saveFile({ name, content });
+        if (res && res.ok) toast('저장했습니다.');
+        else if (!res || !res.canceled) toast('저장하지 못했습니다.' + (res && res.error ? ` (${res.error})` : ''), true);
+      } catch (err) {
+        toast('저장하지 못했습니다.', true);
+      }
+      return;
+    }
+
+    // 2) 모바일: 공유 시트로 파일 내보내기
+    //    await 이전에 호출해야 사용자 제스처가 유지된다.
+    const file = new File([content], name, { type: 'text/markdown' });
+    let canShareFile = false;
+    try {
+      canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+    } catch (_) {
+      canShareFile = false;
+    }
+
+    if (canShareFile) {
+      try {
+        await navigator.share({ files: [file], title: name });
+        return; // 공유 시트에서 사용자가 처리
+      } catch (err) {
+        // 사용자가 취소한 경우는 조용히 끝낸다
+        if (err && err.name === 'AbortError') return;
+        // 공유가 실패하면 아래 다운로드로 넘어간다
+      }
+    }
+
+    // 3) PC 브라우저: 일반 다운로드
+    try {
+      const url = URL.createObjectURL(new Blob([content], { type: 'text/markdown;charset=utf-8' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast(`${name} 으로 내려받았습니다.`);
+    } catch (err) {
+      toast('저장하지 못했습니다.', true);
+    }
+  }
+
+  $('btn-save').addEventListener('click', saveDocument);
 
   $('btn-clear').addEventListener('click', () => {
     closeOverlays();

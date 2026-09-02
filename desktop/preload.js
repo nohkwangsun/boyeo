@@ -11,4 +11,8 @@ contextBridge.exposeInMainWorld('mdViewerDesktop', {
   openFileDialog() {
     return ipcRenderer.invoke('open-file-dialog');
   },
+  // "파일로 저장" → 네이티브 저장 대화상자로 직접 파일을 쓴다
+  saveFile(payload) {
+    return ipcRenderer.invoke('save-file', payload);
+  },
 });

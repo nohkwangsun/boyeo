@@ -220,4 +220,27 @@ if (!app.requestSingleInstanceLock()) {
 
   // 렌더러(웹앱)에서 "파일 열기" 버튼을 눌렀을 때도 네이티브 대화상자를 쓴다
   ipcMain.handle('open-file-dialog', openFileDialog);
+
+  // "파일로 저장": 브라우저 다운로드에 맡기지 않고 앱이 직접 저장한다.
+  // (다운로드에 맡기면 저장 위치를 앱이 알 수 없고, 조용히 실패해도 알 길이 없다)
+  ipcMain.handle('save-file', async (_event, payload) => {
+    const { name, content } = payload || {};
+    const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+      title: '마크다운으로 저장',
+      defaultPath: name && /\.\w+$/.test(name) ? name : 'document.md',
+      filters: [
+        { name: '마크다운', extensions: ['md'] },
+        { name: '텍스트', extensions: ['txt'] },
+      ],
+    });
+
+    if (canceled || !filePath) return { ok: false, canceled: true };
+
+    try {
+      fs.writeFileSync(filePath, String(content == null ? '' : content), 'utf8');
+      return { ok: true, path: filePath };
+    } catch (err) {
+      return { ok: false, error: err.message };
+    }
+  });
 }
