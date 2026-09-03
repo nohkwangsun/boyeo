@@ -95,7 +95,7 @@ package.json           앱 빌드 스크립트
 
 | 플랫폼 | 산출물 |
 |---|---|
-| Windows | `.exe` (NSIS 설치 파일), `.msi` |
+| Windows | `.exe` (NSIS 설치 파일) |
 | macOS | `.dmg` (Intel/Apple Silicon 통합) |
 | Linux | `.AppImage`, `.deb` |
 | Android | `.apk` (디버그 서명) |

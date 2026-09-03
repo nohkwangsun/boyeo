@@ -30,7 +30,6 @@
     "active": true,
     "targets": [
       "nsis",
-      "msi",
       "deb",
       "appimage",
       "dmg",
