@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
- * 모바일 앱(Capacitor)에 넣을 웹 자산을 www/ 로 모은다.
+ * 네이티브 앱에 넣을 웹 자산을 www/ 로 모은다.
+ * 데스크탑(Tauri)과 모바일(Capacitor)이 이 폴더를 함께 쓴다.
  *
- *   node build-mobile.js
+ *   node build-www.js
  *
- * Capacitor 는 하나의 webDir 안에 있는 것만 앱에 담기 때문에,
+ * 두 프레임워크 모두 "하나의 폴더에 담긴 것"만 앱에 넣기 때문에,
  * 저장소 루트에 흩어져 있는 웹앱 파일을 여기로 복사한다.
  * (www/ 는 생성물이므로 저장소에 커밋하지 않는다 — .gitignore 참고)
  */

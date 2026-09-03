@@ -15,15 +15,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            label: Linux
-            args: --linux AppImage deb
           - os: windows-latest
             label: Windows
-            args: --win nsis portable
+            args: ""
           - os: macos-latest
             label: macOS
-            args: --mac dmg zip
+            args: "--target universal-apple-darwin"
+          - os: ubuntu-22.04
+            label: Linux
+            args: ""
 
     steps:
       - uses: actions/checkout@v4
@@ -33,26 +33,40 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Rust 설치
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.os == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Rust 빌드 캐시
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri -> target
+
+      - name: 리눅스 빌드 의존성
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev patchelf \
+            libssl-dev libgtk-3-dev libayatana-appindicator3-dev
+
       - name: 의존성 설치
         run: npm ci
 
       - name: 빌드
-        # 서명 인증서가 없으므로 자동 서명 탐색을 끈다(서명 없이 배포).
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: false
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder ${{ matrix.args }} --publish never
+        run: npx tauri build ${{ matrix.args }}
 
       - name: 산출물 업로드
         uses: actions/upload-artifact@v4
         with:
           name: desktop-${{ matrix.label }}
           path: |
-            dist-desktop/*.AppImage
-            dist-desktop/*.deb
-            dist-desktop/*.exe
-            dist-desktop/*.dmg
-            dist-desktop/*.zip
+            src-tauri/target/release/bundle/**/*.exe
+            src-tauri/target/release/bundle/**/*.msi
+            src-tauri/target/release/bundle/**/*.dmg
+            src-tauri/target/release/bundle/**/*.AppImage
+            src-tauri/target/release/bundle/**/*.deb
+            src-tauri/target/universal-apple-darwin/release/bundle/**/*.dmg
           if-no-files-found: error
 
   android:
@@ -79,7 +93,7 @@ jobs:
 
       - name: 웹 자산 준비 및 동기화
         run: |
-          node build-mobile.js
+          node build-www.js
           npx cap sync android
 
       - name: APK 빌드 (디버그 서명)

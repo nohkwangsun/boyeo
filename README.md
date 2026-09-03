@@ -71,17 +71,22 @@ vendor/                외부 라이브러리 (marked, DOMPurify) — 오프라�
 build-standalone.js    위 파일들을 하나로 합치는 빌드 스크립트
 markdown-viewer.html   ↑ 로 생성된 단일 파일 배포본 (직접 수정하지 마세요)
 
-desktop/               데스크탑 앱(Electron) — 메인 프로세스, preload 다리
+src-tauri/             데스크탑 앱(Tauri) — Rust 셸, 메뉴/파일연결/파일입출력
 android/               안드로이드 앱(Capacitor) 프로젝트
-build-mobile.js        웹 자산을 모바일 앱용 www/ 로 모으는 스크립트
+build-www.js           웹 자산을 네이티브 앱용 www/ 로 모으는 스크립트
+js/native-bridge.js    웹앱↔네이티브(Tauri/Electron) 연결 다리
 capacitor.config.json  Capacitor 설정
-package.json           앱 빌드 설정(electron-builder) 및 스크립트
+package.json           앱 빌드 스크립트
 ```
 
 ## 앱으로 쓰기 (데스크탑 / 모바일)
 
-같은 웹앱 코드를 데스크탑(Electron)과 안드로이드(Capacitor) 앱으로 감쌌다.
+같은 웹앱 코드를 데스크탑(Tauri)과 안드로이드(Capacitor) 앱으로 감쌌다.
 소스는 하나이므로 `index.html`/`css`/`js` 를 고치면 웹·단일파일·데스크탑·모바일에 모두 반영된다.
+
+데스크탑은 Electron 대신 **Tauri** 를 쓴다. Electron 은 Chromium 을 통째로
+끼워 넣어 설치 파일이 160MB를 넘었는데(실제 앱 코드는 0.2MB), Tauri 는
+운영체제에 이미 있는 웹뷰를 쓰기 때문에 10MB 안팎으로 끝난다.
 
 ### 완성된 설치 파일 받기
 
@@ -90,10 +95,13 @@ package.json           앱 빌드 설정(electron-builder) 및 스크립트
 
 | 플랫폼 | 산출물 |
 |---|---|
-| Windows | `.exe` (설치형 NSIS, 무설치 portable) |
-| macOS | `.dmg`, `.zip` |
+| Windows | `.exe` (NSIS 설치 파일), `.msi` |
+| macOS | `.dmg` (Intel/Apple Silicon 통합) |
 | Linux | `.AppImage`, `.deb` |
 | Android | `.apk` (디버그 서명) |
+
+윈도우는 WebView2(엣지) 를 쓴다. 윈도우 10/11 에는 기본 포함되어 있어
+따로 설치할 것이 없다.
 
 `v1.0.0` 처럼 `v` 로 시작하는 태그를 밀면 릴리스가 만들어지고 모든 파일이 자동 첨부된다.
 
@@ -119,14 +127,18 @@ package.json           앱 빌드 설정(electron-builder) 및 스크립트
 ```bash
 npm install
 
-npm start              # 데스크탑 앱 실행 (개발용)
-npm run dist:linux     # 현재 OS 용 설치 파일 만들기 (dist:win / dist:mac)
+npm run desktop:dev    # 데스크탑 앱 실행 (개발용)
+npm run desktop:build  # 현재 OS 용 설치 파일 만들기
 
 npm run mobile:sync    # 웹 자산을 안드로이드 프로젝트로 동기화
 cd android && ./gradlew assembleDebug    # APK (Android SDK 필요)
 ```
 
-데스크탑 설치 파일은 자기 운영체제에서만 만들 수 있다(윈도우 exe 는 윈도우에서).
+데스크탑 빌드에는 [Rust](https://rustup.rs) 가 필요하고, 리눅스에서는
+`libwebkit2gtk-4.1-dev` 등 시스템 패키지도 있어야 한다
+(자세한 목록은 워크플로의 "리눅스 빌드 의존성" 단계 참고).
+
+설치 파일은 자기 운영체제에서만 만들 수 있다(윈도우 exe 는 윈도우에서).
 그래서 위의 GitHub Actions 로 세 OS 를 한 번에 빌드하는 쪽이 편하다.
 
 ## 사용한 오픈소스
